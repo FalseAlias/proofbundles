@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+
+import hashlib
+import sys
+from pathlib import Path
+
+MANIFEST_FILE = "manifest.sha256"
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(8192), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+def load_manifest(path: Path):
+    entries = []
+    with path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            try:
+                digest, filename = line.split(None, 1)
+            except ValueError:
+                print(f"INVALID: malformed manifest line: {line}")
+                sys.exit(1)
+            entries.append((digest, Path(filename)))
+    return entries
+
+def main():
+    root = Path(".")
+    manifest_path = root / MANIFEST_FILE
+
+    if not manifest_path.exists():
+        print("INVALID: manifest.sha256 not found")
+        sys.exit(1)
+
+    manifest = load_manifest(manifest_path)
+
+    for expected_digest, rel_path in manifest:
+        file_path = root / rel_path
+        if not file_path.exists():
+            print(f"INVALID: missing file {rel_path}")
+            sys.exit(1)
+
+        actual_digest = sha256_file(file_path)
+        if actual_digest != expected_digest:
+            print(f"INVALID: hash mismatch for {rel_path}")
+            sys.exit(1)
+
+    print("VALID")
+
+if __name__ == "__main__":
+    main()
