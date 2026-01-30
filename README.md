@@ -8,7 +8,7 @@ All contents are provisional constructs subject to falsification.
 Verification:
 Run `python verify.py` from the repository root.
 The verifier recomputes SHA-256 hashes for all tracked files and compares them
-against manifest.sha256.
+against `manifest.sha256`.
 
 Outcome:
 VALID   — all files match the manifest exactly.
