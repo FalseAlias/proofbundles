@@ -1,19 +1,32 @@
-This repository contains a verification-first provenance substrate.
+# ProofBundles
 
-This is not a claim of truth, correctness, safety, morality, or completeness.
-This repository makes no promises and asks for no trust.
+This repository defines a minimal, verification-first substrate for bundling artifacts such that integrity and inclusion are mechanically verifiable without trust in authors, platforms, or narratives.
 
-All contents are provisional constructs subject to falsification.
+## What this is
+A ProofBundle is a finite set of artifacts plus a manifest that allows any verifier to detect modification, omission, or substitution.
 
-Verification:
-Run `python verify.py` from the repository root.
-The verifier recomputes SHA-256 hashes for all tracked files and compares them
-against `manifest.sha256`.
+## What this is not
+- Not a blockchain
+- Not a governance system
+- Not an ethical or safety framework
+- Not a claim of truth, correctness, or completeness
 
-Outcome:
-VALID   — all files match the manifest exactly.
-INVALID — any mismatch, omission, or alteration.
+## Invariant
+Any modification, omission, reordering, or substitution of tracked artifacts is mechanically detectable.
 
-Falsification:
-Any failure of verification voids all claims of integrity.
-Unverifiable claims are non-claims.
+## Verification
+Run:
+
+```bash
+python tools/verify.py
+```
+
+The verifier recomputes SHA-256 hashes for all tracked files and compares them against `manifest.sha256`.
+
+## Falsification
+- Any hash mismatch falsifies integrity.
+- Any untracked artifact is excluded.
+- Integrity does not imply correctness, meaning, safety, or intent.
+
+## Scope limit
+This repository specifies integrity and provenance mechanics only. All semantic or normative interpretation is out of scope.
